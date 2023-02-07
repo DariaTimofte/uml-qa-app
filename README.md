@@ -36,7 +36,7 @@ A Question-Answer platform allowing users to ask questions and receive answers o
         - qa-app/src/app/shared/adapters/question.adapter.ts `QuestionAdapter` - Adapter implementation for our custom Questions class
         - qa-app/src/app/shared/services/question.service.ts `QuestionService` `getLatestQuestions()` - mapping the result received from the API to the desired object type using the `adapt()` method
 
-> App can be accessed directly through this link: `[Q&A app URL]`
+> App can be accessed directly through this link: [Q&A app URL]
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
