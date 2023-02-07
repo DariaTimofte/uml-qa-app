@@ -1,0 +1,9 @@
+.cdk-global-overlay-wrapper,
+.cdk-overlay-container {
+    z-index: 99999 !important;
+}
+
+.tab-content {
+    justify-content: center;
+    display: flex;
+}

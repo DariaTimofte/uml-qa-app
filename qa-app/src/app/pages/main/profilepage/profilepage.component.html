@@ -1,0 +1,301 @@
+<nav class="navbar navbar-expand-lg fixed-top navbar-transparent" color-on-scroll="100" id="navbar-top">
+  <div class="container">
+    <div class="navbar-translate">
+      <a class="navbar-brand" [routerLink]="['/home']" placement="bottom">
+        <span> boostIQ• </span>
+      </a>
+      <button aria-controls="navigation-index" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler"
+        [attr.aria-expanded]="!isCollapsed" (click)="isCollapsed = !isCollapsed" id="navigation" type="button">
+        <span class="navbar-toggler-bar bar1"> </span>
+        <span class="navbar-toggler-bar bar2"> </span>
+        <span class="navbar-toggler-bar bar3"> </span>
+      </button>
+    </div>
+    <div class="navbar-collapse justify-content-end" [collapse]="isCollapsed" id="navigation">
+      <div class="navbar-collapse-header">
+        <div class="row">
+          <div class="col-6 collapse-brand"><a> BLK• </a></div>
+          <div class="col-6 collapse-close text-right">
+            <button aria-controls="navigation-index" aria-label="Toggle navigation" class="navbar-toggler"
+              [attr.aria-expanded]="!isCollapsed" (click)="isCollapsed = !isCollapsed" id="navigation" type="button">
+              <i class="tim-icons icon-simple-remove"> </i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <ul class="navbar-nav">
+        <li class="nav-item p-0">
+          <a class="nav-link" placement="bottom" target="_blank">
+            Welcome {{ loggedUser?.email }}!
+          </a>
+        </li>
+        <div class="btn-wrapper">
+          <button class="btn btn-info btn-simple btn-round mr-1" type="button" (click)="logout()">
+            Logout
+          </button>
+        </div>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="wrapper">
+  <div class="page-header">
+    <img class="dots" src="assets/img/dots.png" />
+    <img class="path" src="assets/img/path4.png" />
+
+    <div class="container align-items-center" style="margin-top: 200px;">
+      <div class="row">
+        <div class="col-lg-12 col-md-6 ml-auto mr-auto">
+          <div class="card card-coin card-plain">
+            <div class="card-header">
+              <img class="img-center img-fluid rounded-circle" src="assets/img/images.png" />
+            </div>
+            <div class="card-body">
+              <tabset class="nav-tabs-danger justify-content-center tab-subcategories">
+                <tab heading="Your questions">
+                  <div class="table-responsive" *ngIf="questions.length > 0">
+                    <table class="table tablesorter" id="plain-table">
+                      <thead class="text-danger">
+                        <tr>
+                          <th class="header">Question</th>
+                          <th class="header">Category</th>
+                          <th class="header">Posted on</th>
+                        </tr>
+                      </thead>
+                      <tbody *ngFor="let question of questions | paginate: { 
+                            id: 'pagination1', 
+                            itemsPerPage: 5, 
+                            currentPage: p
+                        }">
+                        <tr>
+                          <td>{{ question?.description }}</td>
+                          <td>{{ getQuestionCategory(question?.categoryId) }}</td>
+                          <td>{{ question?.postedDate?.toMillis()| date: 'medium' }}</td>
+                          <td>
+                            <div class="btn-wrapper" *ngIf="question?.acceptedAnswerId == null">
+                              <button class="btn btn-danger btn-simple btn-round mr-1" type="button"
+                                (click)="setSelectedQuestion(question); myModal2.show()">
+                                Edit
+                              </button>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="btn-wrapper" *ngIf="question?.acceptedAnswerId == null">
+                              <button class="btn btn-danger btn-simple btn-round mr-1" type="button"
+                                (click)="deleteQuestion(question.id)">
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="btn-wrapper">
+                              <button class="btn btn-danger btn-simple btn-round mr-1" type="button"
+                                (click)="getQuestionAnswers(question.id); myModal1.show()">
+                                View Answers
+                              </button>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="btn-wrapper">
+                              <button class="btn btn-danger btn-simple btn-round mr-1" type="button"
+                                (click)="goToSuggestions(question.id)">
+                                View Suggestions
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="pagination">
+                      <pagination-controls (pageChange)="p = $event" id="pagination1"></pagination-controls>
+                    </div>
+                  </div>
+                  <div *ngIf="questions.length == 0">
+                    <h3 class="text-white">
+                      You haven't posted any questions yet!
+                    </h3>
+                  </div>
+                </tab>
+                <tab heading="Your answers">
+                  <div class="table-responsive" *ngIf="answers.length > 0">
+                    <table class="table tablesorter" id="plain-table">
+                      <thead class="text-danger">
+                        <tr>
+                          <th class="header">Answer</th>
+                          <th class="header">Posted by</th>
+                          <th class="header">Posted on</th>
+                          <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody *ngFor="let answer of answers | paginate: { 
+                          id: 'pagination2',
+                          itemsPerPage: 5, 
+                          currentPage: p1
+                      }">
+                        <tr>
+                          <td>{{ answer?.description }}</td>
+                          <td>{{ answer?.postedBy }}</td>
+                          <td>{{ answer?.answeredDate?.toMillis()| date: 'medium' }}</td>
+                          <td>
+                            <div class="btn-wrapper" *ngIf="answer?.accepted">
+                              <button class="btn btn-info btn-simple btn-round mr-1" type="button">
+                                Accepted
+                              </button>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="btn-wrapper" *ngIf="!answer?.accepted">
+                              <button class="btn btn-danger btn-simple btn-round mr-1" type="button"
+                                (click)="setSelectedAnswer(answer); myModal1.show()">
+                                Edit
+                              </button>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="btn-wrapper" *ngIf="!answer?.accepted">
+                              <button class="btn btn-danger btn-simple btn-round mr-1" type="button"
+                                (click)="deleteAnswer(answer.id)">
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="pagination">
+                      <pagination-controls id="pagination2" (pageChange)="p1 = $event"></pagination-controls>
+                    </div>
+                  </div>
+                  <div *ngIf="answers.length == 0">
+                    <h3 class="text-white">
+                      You haven't answered to any questions yet!
+                    </h3>
+                  </div>
+                </tab>
+                <tab heading="Your badges">
+                  <div class="table-responsive">
+                    <table class="table tablesorter" id="plain-table">
+                      <tbody>
+                        <tr *ngIf="loggedUser?.questions >= 3 || loggedUser?.answers >= 10">
+                          <td class="row align-items-center" style="justify-content: space-evenly;">
+                            <div *ngIf="loggedUser?.questions >= 3" class="row align-items-center"
+                              style="justify-content: space-evenly;">
+                              <img class="img-fluid" src="assets/img/badge1.png" />
+                              <p class="text-white" style="margin-left: 10px;">
+                                Won for posting at least 3 questions!
+                              </p>
+                            </div>
+                            <div *ngIf="loggedUser?.answers >= 10" class="row align-items-center"
+                              style="justify-content: space-evenly;">
+                              <img class="img-fluid" src="assets/img/badge2.png" />
+                              <p class="text-white" style="margin-left: 10px;">
+                                Won answering at least 10 questions!
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr *ngIf="loggedUser?.suggestions >= 2 || loggedUser?.acceptedAnswers >= 5">
+                          <td class="row align-items-center" style="justify-content: space-evenly;">
+                            <div *ngIf="loggedUser?.suggestions >= 2" class="row align-items-center"
+                              style="justify-content: space-evenly;">
+                              <img class="img-fluid" src="assets/img/badge3.png" />
+                              <p class="text-white" style="margin-left: 10px;">
+                                Won for suggesting at least 2 edits!
+                              </p>
+                            </div>
+                            <div *ngIf="loggedUser?.acceptedAnswers >= 5" class="row align-items-center"
+                              style="justify-content: space-evenly;">
+                              <img class="img-fluid" src="assets/img/badge4.png" />
+                              <p class="text-white" style="margin-left: 10px;">
+                                Won for owning at least 5 answers <br> that got accepted!
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="loggedUser?.questions < 3 && loggedUser?.answers < 10 
+                              && loggedUser?.suggestions < 2 && loggedUser?.acceptedAnswers < 5">
+                    <h3 class="text-white">
+                      You haven't accumulated any badges yet!
+                    </h3>
+                  </div>
+                </tab>
+              </tabset>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div aria-hidden="true" aria-labelledby="myModalLabel" bsModal class="modal fade modal-black" #myModal1="bs-modal"
+    id="myModal1" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header justify-content-center">
+          <button aria-hidden="true" class="close" data-dismiss="modal" (click)="myModal1.hide()" type="button">
+            <i class="tim-icons icon-simple-remove text-white"> </i>
+          </button>
+          <div class="text-muted text-center ml-auto mr-auto">
+            <h3 class="mb-0 mr-10">Edit answer</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="answerForm" role="form">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-send"> </i>
+                </div>
+              </div>
+              <input class="form-control" [value]="selectedAnswer?.description" type="text"
+                formControlName="description" />
+            </div>
+            <div class="text-center">
+              <button class="btn btn-primary my-4" type="button" [disabled]="!answerForm.valid"
+                (click)="updateAnswer(); myModal1.hide()">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div aria-hidden="true" aria-labelledby="myModalLabel" bsModal class="modal fade modal-black" #myModal2="bs-modal"
+    id="myModal2" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header justify-content-center">
+          <button aria-hidden="true" class="close" data-dismiss="modal" (click)="myModal2.hide()" type="button">
+            <i class="tim-icons icon-simple-remove text-white"> </i>
+          </button>
+          <div class="text-muted text-center ml-auto mr-auto">
+            <h3 class="mb-0 mr-10">Edit question</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="questionForm" role="form">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-send"> </i>
+                </div>
+              </div>
+              <input class="form-control" [value]="selectedQuestion?.description" type="text"
+                formControlName="description" />
+            </div>
+            <div class="text-center">
+              <button class="btn btn-primary my-4" type="button" [disabled]="!questionForm.valid"
+                (click)="updateQuestion(); myModal2.hide()">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
