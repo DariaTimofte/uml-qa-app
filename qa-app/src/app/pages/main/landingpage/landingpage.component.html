@@ -1,0 +1,276 @@
+<nav class="navbar navbar-expand-lg navbar-transparent" color-on-scroll="100" id="navbar-top">
+  <div class="container">
+    <div class="navbar-translate">
+      <a class="navbar-brand" [routerLink]="['/home']" placement="bottom">
+        <span> boostIQ• </span>
+      </a>
+      <button aria-controls="navigation-index" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler"
+        [attr.aria-expanded]="!isCollapsed" (click)="isCollapsed = !isCollapsed" id="navigation" type="button">
+        <span class="navbar-toggler-bar bar1"> test 1</span>
+        <span class="navbar-toggler-bar bar2"> test 2 </span>
+        <span class="navbar-toggler-bar bar3"> test 3 </span>
+        button
+      </button>
+    </div>
+    <div class="navbar-collapse justify-content-end" [collapse]="isCollapsed" id="navigation">
+      <div class="navbar-collapse-header">
+        <div class="row">
+          <div class="col-6 collapse-brand"><a> boostIQ• </a></div>
+          <div class="col-6 collapse-close text-right">
+            <button aria-controls="navigation-index" aria-label="Toggle navigation" class="navbar-toggler"
+              [attr.aria-expanded]="!isCollapsed" (click)="isCollapsed = !isCollapsed" id="navigation" type="button">
+              <i class="tim-icons icon-simple-remove"> </i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <ul class="navbar-nav">
+        <li class="nav-item p-0">
+          <a class="nav-link" placement="bottom" target="_blank" (click)="goToProfile()">
+            Welcome {{ loggedUser?.email }}!
+          </a>
+        </li>
+        <div class="btn-wrapper">
+          <button class="btn btn-info btn-simple btn-round mr-1" type="button" (click)="logout()">
+            Logout
+          </button>
+        </div>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="wrapper">
+  <div class="page-header">
+    <img class="path" src="assets/img/blob.png" />
+    <img class="path2" src="assets/img/path2.png" />
+    <img class="shapes circle" src="assets/img/cercuri.png" />
+    <div class="content-center">
+      <div class="align-items-center" style="margin-top: 20px">
+        <div>
+          <h3 class="text-white">
+            Are you in need of some answers today?
+          </h3>
+        </div>
+        <div class="row align-items-baseline col-lg-12 col-md-4"
+          style="justify-content: space-evenly !important; margin-bottom: 50px;">
+          <div class="btn-wrapper">
+            <button class="btn btn-info btn-simple btn-round mr-1" type="button" (click)="myModal2.show()">
+              Ask a question
+            </button>
+          </div>
+          <div class="btn-wrapper">
+            <button class="btn btn-info btn-simple btn-round mr-1" type="button" (click)="goToQuestions()">
+              Browse Questions
+            </button>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12">
+          <tabset class="nav-tabs-danger justify-content-center tab-subcategories">
+            <tab heading="Latest Questions">
+              <div class="table-responsive" *ngIf="questions?.length > 0">
+                <table class="table tablesorter justify-content-center" id="plain-table" style="width: 1000px;">
+                  <thead class="text-danger">
+                    <tr>
+                      <th class="header">Question</th>
+                      <th class="header">Category</th>
+                      <th class="header">Posted by</th>
+                      <th class="header">Posted on</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let question of questions">
+                    <tr>
+                      <td>{{ question?.description }}</td>
+                      <td>{{ getQuestionCategory(question?.categoryId) }}</td>
+                      <td>{{ question?.postedBy }}</td>
+                      <td>{{ question?.postedDate?.toMillis()| date: 'medium' }}</td>
+                      <td>
+                        <div class="btn-wrapper" *ngIf="question?.postedBy != loggedUser?.email && question?.acceptedAnswerId == null">
+                          <button class="btn btn-danger btn-simple btn-round mr-1" type="button"
+                            (click)="setSelectedQuestion(question.id); myModal4.show()">
+                            Answer
+                          </button>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="btn-wrapper">
+                          <button class="btn btn-danger btn-simple btn-round mr-1" type="button"
+                            (click)="setSelectedQuestion(question.id); goToAnswers()">
+                            View Answers
+                          </button>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="btn-wrapper" *ngIf="question?.postedBy != loggedUser?.email && question?.acceptedAnswerId == null">
+                          <button class=" btn btn-danger btn-simple btn-round mr-1" type="button"
+                          (click)="setSelectedQuestionData(question); myModal5.show()">
+                          Suggest edit
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div *ngIf="questions?.length == 0">
+                <h3 class="text-white">
+                  No recent questions!
+                </h3>
+              </div>
+            </tab>
+          </tabset>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div aria-hidden="true" aria-labelledby="myModalLabel" bsModal class="modal fade modal-black" #myModal2="bs-modal"
+    id="myModal2" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header justify-content-center">
+          <button aria-hidden="true" class="close" data-dismiss="modal" (click)="myModal2.hide()" type="button">
+            <i class="tim-icons icon-simple-remove text-white"> </i>
+          </button>
+          <div class="text-muted text-center ml-auto mr-auto">
+            <h3 class="mb-0 mr-10">What do you want to find out today?</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="questionForm" role="form">
+            <div class="row align-items-baseline" style="justify-content: space-evenly !important;">
+              <div *ngIf="categories.length > 0">
+                <mat-form-field appearance="fill">
+                  <mat-label>Categories</mat-label>
+                  <mat-select formControlName="category">
+                    <mat-option *ngFor="let category of categories" [value]="category.id">
+                      {{ category.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="btn-wrapper">
+                <button class="btn btn-danger btn-simple btn-round mr-1" type="button" (click)="myModal3.show()">
+                  Add Category
+                </button>
+              </div>
+            </div>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-send"> </i>
+                </div>
+              </div>
+              <input class="form-control" placeholder="Describe your issue..." type="text"
+                formControlName="description" />
+            </div>
+            <div class="text-center">
+              <button class="btn btn-primary my-4" type="button" [disabled]="!questionForm.valid"
+                (click)="createQuestion(); myModal2.hide()">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div aria-hidden="true" aria-labelledby="myModalLabel" bsModal class="modal fade modal-black" #myModal3="bs-modal"
+    id="myModal3" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header justify-content-center">
+          <button aria-hidden="true" class="close" data-dismiss="modal" (click)="myModal3.hide()" type="button">
+            <i class="tim-icons icon-simple-remove text-white"> </i>
+          </button>
+          <div class="text-muted text-center ml-auto mr-auto">
+            <h3 class="mb-0 mr-10">What category do you want to add?</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="categoryForm" role="form">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-link-72"> </i>
+                </div>
+              </div>
+              <input class="form-control" placeholder="Category" type="text" formControlName="category" />
+            </div>
+            <div class="text-center">
+              <button class="btn btn-primary my-4" type="button" [disabled]="!categoryForm.valid"
+                (click)="createCategory(); myModal3.hide()">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div aria-hidden="true" aria-labelledby="myModalLabel" bsModal class="modal fade modal-black" #myModal4="bs-modal"
+    id="myModal4" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header justify-content-center">
+          <button aria-hidden="true" class="close" data-dismiss="modal" (click)="myModal4.hide()" type="button">
+            <i class="tim-icons icon-simple-remove text-white"> </i>
+          </button>
+          <div class="text-muted text-center ml-auto mr-auto">
+            <h3 class="mb-0 mr-10">Input your answer</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="answerForm" role="form">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-send"> </i>
+                </div>
+              </div>
+              <input class="form-control" placeholder="Input your answer..." type="text" formControlName="answer" />
+            </div>
+            <div class="text-center">
+              <button class="btn btn-primary my-4" type="button" [disabled]="!answerForm.valid"
+                (click)="answerQuestion(); myModal4.hide()">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div aria-hidden="true" aria-labelledby="myModalLabel" bsModal class="modal fade modal-black" #myModal5="bs-modal"
+    id="myModal5" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header justify-content-center">
+          <button aria-hidden="true" class="close" data-dismiss="modal" (click)="myModal2.hide()" type="button">
+            <i class="tim-icons icon-simple-remove text-white"> </i>
+          </button>
+          <div class="text-muted text-center ml-auto mr-auto">
+            <h3 class="mb-0 mr-10">Have a suggestion?</h3>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="suggestionForm" role="form">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="tim-icons icon-send"> </i>
+                </div>
+              </div>
+              <input class="form-control" [value]="selectedQuestionData?.description" type="text"
+                formControlName="description" />
+            </div>
+            <div class="text-center">
+              <button class="btn btn-primary my-4" type="button" [disabled]="!suggestionForm.valid"
+                (click)="suggestQuestionEdit(); myModal5.hide()">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

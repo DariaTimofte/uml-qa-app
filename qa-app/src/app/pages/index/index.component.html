@@ -1,0 +1,232 @@
+<nav class="navbar navbar-expand-lg fixed-top navbar-transparent" color-on-scroll="100" id="navbar-top">
+  <div class="container">
+    <div class="navbar-translate">
+      <a class="navbar-brand" placement="bottom" [routerLink]="['/home']" target="_blank"
+        tooltip="Designed and Coded by Creative Tim">
+        <span> boostIQ• </span> The answer to your questions
+      </a>
+      <button aria-controls="navigation-index" aria-label="Toggle navigation" class="navbar-toggler navbar-toggler"
+        [attr.aria-expanded]="!isCollapsed" (click)="isCollapsed = !isCollapsed" id="navigation" type="button">
+        <span class="navbar-toggler-bar bar1"> </span>
+        <span class="navbar-toggler-bar bar2"> </span>
+        <span class="navbar-toggler-bar bar3"> </span>
+      </button>
+    </div>
+    <div class="navbar-collapse justify-content-end" [collapse]="isCollapsed" id="navigation">
+      <div class="navbar-collapse-header">
+        <div class="row">
+          <div class="col-6 collapse-brand"><a> boostIQ• </a></div>
+          <div class="col-6 collapse-close text-right">
+            <button aria-controls="navigation-index" aria-label="Toggle navigation" class="navbar-toggler"
+              [attr.aria-expanded]="!isCollapsed" (click)="isCollapsed = !isCollapsed" id="navigation" type="button">
+              <i class="tim-icons icon-simple-remove"> </i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="wrapper">
+  <div class="main">
+    <div class="section section-signup">
+      <div class="container">
+        <div class="squares square-1"></div>
+        <div class="squares square-2"></div>
+        <div class="squares square-3"></div>
+        <div class="squares square-4"></div>
+        <div class="row row-grid justify-content-between align-items-center">
+          <div class="col-lg-6">
+            <h3 class="display-3 text-white">
+              Create your account today to start your learning path
+              <span class="text-white"> or help others on theirs.</span>
+            </h3>
+            <p class="text-white mb-3">
+              If you already have an account, click on the button below to login.
+            </p>
+            <div class="btn-wrapper">
+              <button class="btn btn-primary btn-simple btn-round mr-1" type="button" (click)="myModal2.show()">
+                Login
+              </button>
+            </div>
+          </div>
+          <div class="col-lg-6 mb-lg-auto">
+            <div class="card card-register">
+              <div class="card-header">
+                <img alt="Card image" class="card-img" src="assets/img/square-purple-1.png" />
+
+                <h4 class="card-title">Register</h4>
+              </div>
+              <div class="card-body">
+                <div class="btn-wrapper text-left" style="margin-bottom: 5%;">
+                  <a class="btn btn-neutral btn-icon" (click)="googleSignIn()">
+                    <img src="assets/img/google.svg" />
+                  </a>
+                  <p style="display: inline-block; margin-left: 5%;">Or sign up using credentials</p>
+                </div>
+                <form [formGroup]="signUpForm" class="form">
+                  <div class="input-group" [ngClass]="{'has-danger': checkFieldValidity('email', 'register') != null}">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">
+                        <i class="tim-icons icon-email-85"> </i>
+                      </div>
+                    </div>
+                    <input class="form-control"
+                      [ngClass]="{'form-control-danger': checkFieldValidity('email', 'register') != null}"
+                      placeholder="Email" type="email" formControlName="email" />
+                    <div class="typography-line" *ngIf="checkFieldValidity('email', 'register') != null">
+                      <p class="text-danger">
+                        {{ checkFieldValidity('email', 'register') }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="input-group"
+                    [ngClass]="{'has-danger': checkFieldValidity('password', 'register') != null}">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">
+                        <i class="tim-icons icon-lock-circle"> </i>
+                      </div>
+                    </div>
+                    <input class="form-control"
+                      [ngClass]="{'form-control-danger': checkFieldValidity('password', 'register') != null}"
+                      placeholder="Password" type="password" formControlName="password" />
+                    <div class="typography-line" *ngIf="checkFieldValidity('password', 'register') != null">
+                      <p class="text-danger">
+                        {{ checkFieldValidity('password', 'register') }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="input-group"
+                    [ngClass]="{'has-danger': checkFieldValidity('confirmPassword', 'register') != null}">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">
+                        <i class="tim-icons icon-lock-circle"> </i>
+                      </div>
+                    </div>
+                    <input class="form-control"
+                      [ngClass]="{'form-control-danger': checkFieldValidity('confirmPassword', 'register') != null}"
+                      placeholder="Confirm password" type="password" formControlName="confirmPassword" />
+                    <div class="typography-line" *ngIf="checkFieldValidity('confirmPassword', 'register') != null">
+                      <p class="text-danger">
+                        {{ checkFieldValidity('confirmPassword', 'register') }}
+                      </p>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="card-footer">
+                <button [disabled]="!signUpForm.valid" class="btn btn-primary btn-round mr-1" type="button"
+                  (click)="register()">
+                  Get Started
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div aria-hidden="true" aria-labelledby="myModalLabel" bsModal class="modal fade modal-black" #myModal2="bs-modal"
+      id="myModal2" role="dialog" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header justify-content-center">
+            <button aria-hidden="true" class="close" data-dismiss="modal" (click)="myModal2.hide()" type="button">
+              <i class="tim-icons icon-simple-remove text-white"> </i>
+            </button>
+            <div class="text-muted text-center ml-auto mr-auto">
+              <h3 class="mb-0">Sign in with</h3>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div class="btn-wrapper text-center">
+              <a class="btn btn-neutral btn-icon" (click)="googleSignIn()">
+                <img src="assets/img/google.svg" />
+              </a>
+            </div>
+            <div class="text-center text-muted mb-4 mt-3">
+              <small> Or sign in with credentials </small>
+            </div>
+            <form [formGroup]="loginForm" role="form">
+              <div class="input-group" [ngClass]="{'has-danger': checkFieldValidity('email', 'login') != null}">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <i class="tim-icons icon-email-85"> </i>
+                  </div>
+                </div>
+                <input class="form-control"
+                  [ngClass]="{'form-control-danger': checkFieldValidity('email', 'login') != null}" placeholder="Email"
+                  type="email" formControlName="email" />
+                <div class="typography-line" *ngIf="checkFieldValidity('email', 'login') != null">
+                  <p class="text-danger">
+                    {{ checkFieldValidity('email', 'login') }}
+                  </p>
+                </div>
+              </div>
+              <div class="input-group" [ngClass]="{'has-danger': checkFieldValidity('password', 'login') != null}">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <i class="tim-icons icon-lock-circle"> </i>
+                  </div>
+                </div>
+                <input class="form-control"
+                  [ngClass]="{'form-control-danger': checkFieldValidity('password', 'login') != null}"
+                  placeholder="Password" type="password" formControlName="password" />
+                <div class="typography-line" *ngIf="checkFieldValidity('password', 'login') != null">
+                  <p class="text-danger">
+                    {{ checkFieldValidity('password', 'login') }}
+                  </p>
+                </div>
+              </div>
+              <div class="text-center">
+                <p class="text-danger" (click)="myModal3.show()" style="cursor: pointer;"> Forgot password? </p>
+                <button class="btn btn-primary my-4" type="button" [disabled]="!loginForm.valid" (click)="login()">
+                  Sign in
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div aria-hidden="true" aria-labelledby="myModalLabel" bsModal class="modal fade modal-black" #myModal3="bs-modal"
+      id="myModal3" role="dialog" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header justify-content-center">
+            <button aria-hidden="true" class="close" data-dismiss="modal" (click)="myModal3.hide()" type="button">
+              <i class="tim-icons icon-simple-remove text-white"> </i>
+            </button>
+            <div class="text-muted text-center ml-auto mr-auto">
+              <h3 class="mb-0">Change password</h3>
+            </div>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="passwordChange" role="form">
+              <div class="input-group" [ngClass]="{'has-danger': checkFieldValidity('email', 'login') != null}">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <i class="tim-icons icon-email-85"> </i>
+                  </div>
+                </div>
+                <input class="form-control"
+                  [ngClass]="{'form-control-danger': checkFieldValidity('email', 'login') != null}" placeholder="Email"
+                  type="email" formControlName="email" />
+                <div class="typography-line" *ngIf="checkFieldValidity('email', 'login') != null">
+                  <p class="text-danger">
+                    {{ checkFieldValidity('email', 'login') }}
+                  </p>
+                </div>
+              </div>
+              <div class="text-center">
+                <button class="btn btn-primary my-4" type="button" [disabled]="!passwordChange.valid"
+                  (click)="sendEmail(); myModal3.hide();myModal2.hide()">
+                  Send email
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
